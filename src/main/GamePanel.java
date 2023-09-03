@@ -25,7 +25,7 @@ public class GamePanel extends JPanel {
     private int playerDirection = 0;
     private boolean moving = false;
     private int xDelta = 200, yDelta = 200;
-    private int frame = 0;
+    private int frame = 0,update = 0;
 
     public GamePanel() {
         mouseInputs = new MouseInputs(this);
@@ -39,19 +39,23 @@ public class GamePanel extends JPanel {
         addMouseListener(mouseInputs);
         addMouseMotionListener(mouseInputs);
     }
+    //Hàm cập nhật game (xử lí tính toán)
+    public void updateGame(){
+        updateAnimationTick();
+        updatePos();
+        setAnimation();
+    }
 
-    public void updateFrameRate(int frame) {
+    public void updateFrameRate(int frame,int update) {
         this.frame = frame;
+        this.update = update;
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        updateAnimationTick();
-        updatePos();
-        setAnimation();
         g.drawImage(animations[playerAction][aniIndex], xDelta, yDelta, 128, 128, null);
-        g.drawString("FPS:" + frame, xDelta, yDelta);
+        g.drawString("FPS:" + frame+" UPS: "+update, xDelta, yDelta);
     }
 
     public void setAnimation() {
