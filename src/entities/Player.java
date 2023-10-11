@@ -10,10 +10,13 @@ import javax.imageio.ImageIO;
 
 public class Player extends Entity {
     private BufferedImage[][] animations;
-    private int aniTick, aniIndex, aniSpeed = 10;
+    private int aniTick, aniIndex, aniSpeed = 15;
     private int playerAction = WALKING;
     private int playerDirection = 0;
     private boolean moving = false;
+
+    private boolean left, up, right, down;
+    private float playerSpeed = 2.0f;
 
     public Player(float x, float y) {
         super(x, y);
@@ -27,58 +30,55 @@ public class Player extends Entity {
     }
 
     public void render(Graphics g) {
-        g.drawImage(animations[playerAction][aniIndex], (int)x, (int)y, 128, 128, null);
+        g.drawImage(animations[playerAction][aniIndex], (int) x, (int) y, 128, 128, null);
     }
 
     private void loadAnimations() {
-        File file = new File("res/player.png");
+        File file = new File("res/entities/player.png");
         try {
             BufferedImage img = ImageIO.read(file);
-            animations = new BufferedImage[3][12];
+            animations = new BufferedImage[3][8];
             for (int i = 0; i < animations.length; i++)
                 for (int j = 0; j < animations[i].length; j++) {
-                    animations[i][j] = img.getSubimage(j * 32, i * 32, 32, 32);
+                    animations[i][j] = img.getSubimage(j * 58, i * 58, 58, 58);
                 }
         } catch (IOException e) {
         }
 
     }
+
     public void setAnimation() {
+        int startAnim = playerAction;
         if (!moving) {
             playerAction = IDLE;
         } else {
             playerAction = WALKING;
         }
+        if (startAnim != playerAction) {
+            resetAnimIndex();
+        }
     }
 
-    public void setDirection(int direction) {
-        playerDirection = direction;
-        moving = true;
-    }
-
-    public void setMoving(boolean moving) {
-        this.moving = moving;
+    private void resetAnimIndex() {
+        aniIndex = 0;
+        aniTick = 0;
     }
 
     private void updatePos() {
-        if (moving) {
-            switch (playerDirection) {
-                case LEFT:
-                    x -= 1;
-                    break;
-                case RIGHT:
-                    x += 1;
-                    break;
-                case UP:
-                    y -= 1;
-                    break;
-                case DOWN:
-                    y += 1;
-                    break;
-
-                default:
-                    break;
-            }
+        moving =false;
+        if (right && !left) {
+            x += playerSpeed;
+            moving = true;
+        } else if (!right && left) {
+            x -= playerSpeed;
+            moving = true;
+        }
+        if (up && !down) {
+            y -= playerSpeed;
+            moving = true;
+        } else if (!up && down) {
+            y += playerSpeed;
+            moving = true;
         }
     }
 
@@ -93,4 +93,35 @@ public class Player extends Entity {
         }
     }
 
+    public boolean isLeft() {
+        return left;
+    }
+
+    public boolean isUp() {
+        return up;
+    }
+
+    public boolean isRight() {
+        return right;
+    }
+
+    public boolean isDown() {
+        return down;
+    }
+
+    public void setLeft(boolean left) {
+        this.left = left;
+    }
+
+    public void setUp(boolean up) {
+        this.up = up;
+    }
+
+    public void setRight(boolean right) {
+        this.right = right;
+    }
+
+    public void setDown(boolean down) {
+        this.down = down;
+    }
 }

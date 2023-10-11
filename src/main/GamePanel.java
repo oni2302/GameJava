@@ -3,7 +3,6 @@ package main;
 import javax.swing.JPanel;
 
 import inputs.KeyboardInputs;
-import inputs.MouseInputs;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
