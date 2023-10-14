@@ -2,11 +2,8 @@ package entities;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import static utilz.Constants.PlayerConstants.*;
-import static utilz.Constants.Directions.*;
-import javax.imageio.ImageIO;
+import static utilz.LoadSave.*;
 
 public class Player extends Entity {
     private BufferedImage[][] animations;
@@ -34,16 +31,12 @@ public class Player extends Entity {
     }
 
     private void loadAnimations() {
-        File file = new File("res/entities/player.png");
-        try {
-            BufferedImage img = ImageIO.read(file);
-            animations = new BufferedImage[3][8];
-            for (int i = 0; i < animations.length; i++)
-                for (int j = 0; j < animations[i].length; j++) {
-                    animations[i][j] = img.getSubimage(j * 58, i * 58, 58, 58);
-                }
-        } catch (IOException e) {
-        }
+        BufferedImage img = GetSpriteAtlas(PLAYER_ATLAS);
+        animations = new BufferedImage[3][8];
+        for (int i = 0; i < animations.length; i++)
+            for (int j = 0; j < animations[i].length; j++) {
+                animations[i][j] = img.getSubimage(j * 58, i * 58, 58, 58);
+            }
 
     }
 
@@ -65,7 +58,7 @@ public class Player extends Entity {
     }
 
     private void updatePos() {
-        moving =false;
+        moving = false;
         if (right && !left) {
             x += playerSpeed;
             moving = true;
