@@ -2,42 +2,61 @@ package entities;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+
+import main.Game;
+import utilz.HelpMethods;
+
 import static utilz.Constants.PlayerConstants.*;
 import static utilz.LoadSave.*;
 
 public class Player extends Entity {
     private BufferedImage[][] animations;
-    private int aniTick, aniIndex, aniSpeed = 15;
+    private int aniTick, aniIndex, aniSpeed = 8;
     private int playerAction = WALKING;
     private int playerDirection = 0;
     private boolean moving = false;
 
     private boolean left, up, right, down;
-    private float playerSpeed = 2.0f;
+    private float playerSpeed = 1.0f;
 
-    public Player(float x, float y) {
-        super(x, y);
+    private int[][] lvlData;
+    private float xDrawOffset = 32 * Game.SCALE;
+    private float yDrawOffset = 26 * Game.SCALE;
+
+    public Player(float x, float y, int width, int height) {
+        super(x, y, width, height);
         loadAnimations();
+        initHitBox(x, y, 16 * Game.SCALE, 32 * Game.SCALE);
+        System.out.println(hitbox.x+" / "+hitbox.y);
+        System.out.println(x+" / "+y);
     }
 
     public void update() {
         updateAnimationTick();
         setAnimation();
         updatePos();
+        // updateHitbox();
     }
 
     public void render(Graphics g) {
-        g.drawImage(animations[playerAction][aniIndex], (int) x, (int) y, 128, 128, null);
+
+        g.drawImage(animations[playerAction][aniIndex], (int) (hitbox.x - xDrawOffset), (int) (hitbox.y - yDrawOffset),
+                width, height, null);
+        drawHitbox(g);
     }
 
     private void loadAnimations() {
-        BufferedImage img = GetSpriteAtlas(PLAYER_ATLAS);
-        animations = new BufferedImage[3][8];
+        BufferedImage img = GetSpriteAtlas(PLAYER_RED_HOOD);
+        animations = new BufferedImage[10][30];
         for (int i = 0; i < animations.length; i++)
             for (int j = 0; j < animations[i].length; j++) {
-                animations[i][j] = img.getSubimage(j * 58, i * 58, 58, 58);
+                animations[i][j] = img.getSubimage(j * 80, i * 80, 80, 80);
             }
 
+    }
+
+    public void loadLvlData(int[][] lvlData) {
+        this.lvlData = lvlData;
     }
 
     public void setAnimation() {
@@ -59,18 +78,34 @@ public class Player extends Entity {
 
     private void updatePos() {
         moving = false;
+
+        if (!left && !right && !up && !down) {
+            return;
+        }
+        float xSpeed = 0, ySpeed = 0;
+
         if (right && !left) {
-            x += playerSpeed;
+            xSpeed = playerSpeed;
             moving = true;
         } else if (!right && left) {
-            x -= playerSpeed;
+            xSpeed = -playerSpeed;
             moving = true;
         }
         if (up && !down) {
-            y -= playerSpeed;
+            ySpeed = -playerSpeed;
             moving = true;
         } else if (!up && down) {
-            y += playerSpeed;
+            ySpeed = playerSpeed;
+            moving = true;
+        }
+        // if (HelpMethods.CanMoveHere(xSpeed + x, ySpeed + y, width, height, lvlData)) {
+        //     this.x += xSpeed;
+        //     this.y += ySpeed;
+        //     moving = true;
+        // }
+        if (HelpMethods.CanMoveHere(xSpeed + hitbox.x, ySpeed + hitbox.y, hitbox.width, hitbox.height, lvlData)) {
+            hitbox.x += xSpeed;
+            hitbox.y += ySpeed;
             moving = true;
         }
     }
@@ -80,7 +115,7 @@ public class Player extends Entity {
         if (aniTick >= aniSpeed) {
             aniTick = 0;
             aniIndex++;
-            if (aniIndex >= GetSpriteAmount(playerAction)) {
+            if (aniIndex >= GetSpriteAmountRedHood(playerAction)) {
                 aniIndex = 0;
             }
         }

@@ -12,7 +12,8 @@ import main.Game;
 
 public class LoadSave {
     public static final String PLAYER_ATLAS = "res/entities/player.png";
-    public static final String LEVEL_ATLAS = "res/tiles_set/tiles_sprite.png";
+    public static final String PLAYER_RED_HOOD = "res/entities/red_hood_player.png";
+    public static final String LEVEL_ATLAS = "res/tiles_set/tiles.png";
     public static final String LEVEL_ONE_DATA = "res/levels/level_one.png";
     public static BufferedImage GetSpriteAtlas(String filePath) {
         BufferedImage img = null;
@@ -33,7 +34,7 @@ public class LoadSave {
             for (int j = 0; j < img.getWidth(); j++) {
                 Color color = new Color(img.getRGB(j, i));
                 int value = color.getRed();
-                if(value>=30){
+                if(value>=255){
                     value = 0;
                 }
                 lvlData[i][j] = value;

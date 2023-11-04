@@ -12,11 +12,11 @@ public class Game implements Runnable {
     private final int UPS_SET = 200;
     private Player player;
     private LevelManager levelManager;
-    public final static int TILES_DEFAULT_SIZE = 64;
+    public final static int TILES_DEFAULT_SIZE =24;
 
-    public final static float SCALE = 1.0f;
-    public final static int TILES_IN_WIDTH = 32;
-    public final static int TILES_IN_HEIGHT = 20;
+    public final static float SCALE = 2f;
+    public final static int TILES_IN_WIDTH = 24;
+    public final static int TILES_IN_HEIGHT = 16;
     public final static int TILES_SIZE = (int)(TILES_DEFAULT_SIZE*SCALE);
     public final static int GAME_WIDTH = TILES_SIZE*TILES_IN_WIDTH;
     public final static int GAME_HEIGHT = TILES_SIZE*TILES_IN_HEIGHT;
@@ -31,8 +31,9 @@ public class Game implements Runnable {
     }
 
     private void initClasses() {
-        player = new Player(200, 200);
         levelManager = new LevelManager(this);
+        player = new Player(200, 200,(int)(80*SCALE),(int)(80*SCALE));
+        player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
     }
 
     public void update() {
@@ -87,7 +88,7 @@ public class Game implements Runnable {
             }
             if (System.nanoTime() - lastCheck >= 1000000000) {
                 lastCheck = System.nanoTime();
-                frames = 0;
+                frames = 0;    
                 updates = 0;
             }
 
