@@ -22,7 +22,7 @@ public abstract class Entity {
         this.hitbox = new Rectangle2D.Float(x, y, w, h);
     }
     protected void drawHitbox(Graphics g){
-        g.setColor(Color.green);
+        g.setColor(Color.red);
         g.drawRect((int)hitbox.x, (int)hitbox.y, (int)hitbox.width, (int)hitbox.height);
     }
     // protected void updateHitbox() {
