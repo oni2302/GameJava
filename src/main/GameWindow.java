@@ -1,17 +1,37 @@
 package main;
 
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
+
 import javax.swing.JFrame;
 
-public class GameWindow{
-    private JFrame jFrame;
-    public GameWindow(GamePanel gamePanel) {
-        jFrame = new JFrame();
-        jFrame.setSize(1280, 720);
-        jFrame.setVisible(true);
-        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jFrame.add(gamePanel); 
-        jFrame.setResizable(false);
-        jFrame.pack();
-        jFrame.setLocationRelativeTo(null);
-    }
+public class GameWindow {
+	private JFrame jframe;
+
+	public GameWindow(GamePanel gamePanel) {
+
+		jframe = new JFrame();
+
+		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jframe.add(gamePanel);
+		jframe.setLocationRelativeTo(null);
+		jframe.setResizable(false);
+		jframe.pack();
+		jframe.setVisible(true);
+		jframe.addWindowFocusListener(new WindowFocusListener() {
+
+			@Override
+			public void windowLostFocus(WindowEvent e) {
+				gamePanel.getGame().windowFocusLost();
+			}
+
+			@Override
+			public void windowGainedFocus(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
+	}
+
 }
