@@ -146,6 +146,34 @@ LOCK TABLES `player_state` WRITE;
 /*!40000 ALTER TABLE `player_state` DISABLE KEYS */;
 /*!40000 ALTER TABLE `player_state` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'game'
+--
+/*!50003 DROP PROCEDURE IF EXISTS `GetPlayerInfo` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetPlayerInfo`(IN playerIdParam INT)
+BEGIN
+    SELECT p.id, p.username, p.name, p.score, l.current_x, l.current_y, ps.current_lvl,a.current_hp as hp , a.current_power as power
+    FROM player p
+    left JOIN location l ON p.id = l.playerId
+    left JOIN player_state ps ON p.id = ps.playerId
+    left join attribute a on a.playerId = p.id
+    WHERE p.id = playerIdParam;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -156,4 +184,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-22  1:23:56
+-- Dump completed on 2023-11-22  1:28:06
