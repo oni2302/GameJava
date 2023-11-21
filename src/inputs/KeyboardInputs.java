@@ -7,42 +7,35 @@ import gamestates.Gamestate;
 import main.GamePanel;
 
 public class KeyboardInputs implements KeyListener {
-    private GamePanel gamePanel;
 
-    public KeyboardInputs(GamePanel gamePanel) {
-        this.gamePanel = gamePanel;
-    }
+	private GamePanel gamePanel;
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
+	public KeyboardInputs(GamePanel gamePanel) {
+		this.gamePanel = gamePanel;
+	}
 
-    @Override
-    public void keyPressed(KeyEvent e) {
-        switch (Gamestate.state) {
-            case MENU:
-                gamePanel.getGame().getMenu().keyPressed(e);
-                break;
-            case PLAYING:
-                gamePanel.getGame().getPlaying().keyPressed(e);
-                break;
-            default:
-                break;
-        }
-    }
+	@SuppressWarnings("incomplete-switch")
+	@Override
+	public void keyReleased(KeyEvent e) {
+		switch (Gamestate.state) {
+		case MENU -> gamePanel.getGame().getMenu().keyReleased(e);
+		case PLAYING -> gamePanel.getGame().getPlaying().keyReleased(e);
+		case CREDITS -> gamePanel.getGame().getCredits().keyReleased(e);
+		}
+	}
 
-    @Override
-    public void keyReleased(KeyEvent e) {
-        switch (Gamestate.state) {
-            case MENU:
-                gamePanel.getGame().getMenu().keyReleased(e);
-                break;
-            case PLAYING:
-                gamePanel.getGame().getPlaying().keyReleased(e);
-                break;
-            default:
-                break;
-        }
-    }
+	@SuppressWarnings("incomplete-switch")
+	@Override
+	public void keyPressed(KeyEvent e) {
+		switch (Gamestate.state) {
+		case MENU -> gamePanel.getGame().getMenu().keyPressed(e);
+		case PLAYING -> gamePanel.getGame().getPlaying().keyPressed(e);
+		case OPTIONS -> gamePanel.getGame().getGameOptions().keyPressed(e);
+		}
+	}
 
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// Not In Use
+	}
 }

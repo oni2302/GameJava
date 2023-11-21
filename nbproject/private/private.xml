@@ -3,9 +3,24 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/NNP/Desktop/Java_Wokspace/CivilWar/src/main/MainClass.java</file>
-            <file>file:/C:/Users/NNP/Desktop/Java_Wokspace/CivilWar/src/main/GamePanel.java</file>
-            <file>file:/C:/Users/NNP/Desktop/Java_Wokspace/CivilWar/src/inputs/KeyboardInputs.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/main/GamePanel.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/entities/Enemy.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/entities/Entity.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/utilz/HelpMethods.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/audio/AudioPlayer.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/utilz/LoadSave.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/data/SaveDataMethod.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/utilz/Constants.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/gamestates/Playing.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/data/LoadDataMethod.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/inputs/MouseInputs.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/main/MainClass.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/data/Connection.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/entities/Player.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/main/Game.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/inputs/KeyboardInputs.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/entities/Crabby.java</file>
+            <file>file:/C:/Users/oni/Downloads/12_9_KyYeu/PlatformerTutorial-ep28_finale/PlatformerTutorial-ep28_finale/PlatformerTutorial/src/gamestates/Statemethods.java</file>
         </group>
     </open-files>
 </project-private>
