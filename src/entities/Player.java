@@ -205,11 +205,15 @@ public class Player extends Entity {
 
 		attackBox.y = hitbox.y + (Game.SCALE * 10);
 	}
-
 	private void updateHealthBar() {
 		healthWidth = (int) ((currentHealth / (float) maxHealth) * healthBarWidth);
 	}
-
+        public int getCurrentHP(){
+            return currentHealth;
+        }
+        public int getCurrentPower(){
+            return powerValue;
+        }
 	private void updatePowerBar() {
 		powerWidth = (int) ((powerValue / (float) powerMaxValue) * powerBarWidth);
 

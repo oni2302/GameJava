@@ -37,5 +37,5 @@ public class KeyboardInputs implements KeyListener {
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// Not In Use
-	}
+	}           
 }

@@ -1,5 +1,6 @@
 package gamestates;
 
+import data.Connect;
 import data.PlayerModel;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -26,7 +27,7 @@ import java.awt.Point;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import java.sql.PreparedStatement;
 import static utilz.Constants.Environment.*;
 import static utilz.Constants.Dialogue.*;
 
@@ -166,7 +167,7 @@ public class Playing extends State implements Statemethods {
         player = new Player(200, 200, (int) (64 * Game.SCALE), (int) (40 * Game.SCALE), this);
         player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
         if (!isLoad) {
-            player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn()); 
+            player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
         } else {
             isLoad = false;
         }
@@ -196,7 +197,7 @@ public class Playing extends State implements Statemethods {
             if (drawRain) {
                 rain.update(xLvlOffset);
             }
-            score = (long) ((double)((300 - (System.currentTimeMillis() / 1000.0 - startTime)) / (300 - ((levelManager.getLevelIndex() + 1) * 3.0))) * 1000.0 * (1 - (deadTimes * 0.1)));
+            score = (long) ((double) ((300 - (System.currentTimeMillis() / 1000.0 - startTime)) / (300 - ((levelManager.getLevelIndex() + 1) * 3.0))) * 1000.0 * (1 - (deadTimes * 0.1)));
             levelManager.update();
             objectManager.update(levelManager.getCurrentLevel().getLevelData(), player);
             player.update();
@@ -298,7 +299,7 @@ public class Playing extends State implements Statemethods {
         objectManager.drawBackgroundTrees(g, xLvlOffset);
         drawDialogue(g, xLvlOffset);
 
-        g.drawString(score+" / "+deadTimes, (int)player.getHitbox().x, (int)player.getHitbox().y);
+        g.drawString(score + " / " + deadTimes, (int) player.getHitbox().x, (int) player.getHitbox().y);
         if (paused) {
             g.setColor(new Color(0, 0, 0, 150));
             g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
@@ -374,12 +375,18 @@ public class Playing extends State implements Statemethods {
         objectManager.checkSpikesTouched(p);
     }
 
+    public void releaseInput() {
+        player.setJump(false);
+        player.setAttacking(false);
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         if (!gameOver) {
             if (e.getButton() == MouseEvent.BUTTON1) {
                 player.setAttacking(true);
-            } else if (e.getButton() == MouseEvent.BUTTON3) {
+            }
+            if (e.getButton() == MouseEvent.BUTTON3) {
                 player.powerAttack();
             }
         }
@@ -400,7 +407,9 @@ public class Playing extends State implements Statemethods {
                     player.setJump(true);
                     break;
                 case KeyEvent.VK_ESCAPE:
+                    saveCurrentProgress();
                     paused = !paused;
+                    break;
             }
         }
     }
@@ -420,6 +429,27 @@ public class Playing extends State implements Statemethods {
                     break;
             }
         }
+    }
+
+    public void saveCurrentProgress() {
+        String sql = "call saveCurrentProgress(?,?,?,?,?,?,?)";
+        PreparedStatement ps;
+        try {
+            ps = Connect.getConnection().prepareCall(sql);
+            
+            ps.setInt(1, Game.PLAYER_ID);
+            ps.setInt(2, player.getCurrentHP());
+            ps.setInt(3,player.getCurrentPower());
+            ps.setInt(4, (int) player.x);
+            ps.setInt(5, (int)player.y);
+            ps.setInt(6, levelManager.getLevelIndex());
+            ps.setInt(7, (int) score);
+            System.out.println(ps.toString());
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(Playing.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     public void mouseDragged(MouseEvent e) {
@@ -472,7 +502,7 @@ public class Playing extends State implements Statemethods {
 
     public void setLevelCompleted(boolean levelCompleted) throws SQLException {
         game.getAudioPlayer().lvlCompleted();
-        
+
         save();
         if (levelManager.getLevelIndex() + 1 >= levelManager.getAmountOfLevels()) {
             // No more levels

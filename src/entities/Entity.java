@@ -13,7 +13,8 @@ import main.Game;
 
 public abstract class Entity {
 
-	protected float x, y;
+	public float x;
+	public float y;
 	protected int width, height;
 	protected Rectangle2D.Float hitbox;
 	protected int aniTick, aniIndex;
@@ -70,7 +71,6 @@ public abstract class Entity {
 	protected void drawHitbox(Graphics g, int xLvlOffset) {
 		g.setColor(Color.PINK);
 		g.drawRect((int) hitbox.x - xLvlOffset, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
-                g.drawRect((int)x,(int)y,width,height);
 	}
 
 	protected void initHitbox(int width, int height) {
