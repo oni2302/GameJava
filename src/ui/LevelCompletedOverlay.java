@@ -78,7 +78,6 @@ public class LevelCompletedOverlay {
 			if (next.isMousePressed()) {
 				playing.loadNextLevel();
 				playing.getGame().getAudioPlayer().setLevelSong(playing.getLevelManager().getLevelIndex());
-                                playing.releaseInput();
 			}
 
 		menu.resetBools();

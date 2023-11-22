@@ -1,6 +1,5 @@
 package gamestates;
 
-import data.Connect;
 import data.PlayerModel;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -27,7 +26,7 @@ import java.awt.Point;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.sql.PreparedStatement;
+
 import static utilz.Constants.Environment.*;
 import static utilz.Constants.Dialogue.*;
 
@@ -375,21 +374,15 @@ public class Playing extends State implements Statemethods {
         objectManager.checkSpikesTouched(p);
     }
 
-    public void releaseInput() {
-        player.setJump(false);
-        player.setAttacking(false);
-    }
-
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (!gameOver) {
-            if (e.getButton() == MouseEvent.BUTTON1) {
-                player.setAttacking(true);
-            }
-            if (e.getButton() == MouseEvent.BUTTON3) {
-                player.powerAttack();
-            }
-        }
+//        if (!gameOver) {
+//            if (e.getButton() == MouseEvent.BUTTON1) {
+//                player.setAttacking(true);
+//            } else if (e.getButton() == MouseEvent.BUTTON3) {
+//                player.powerAttack();
+//            }
+//        }
     }
 
     @Override
@@ -403,13 +396,19 @@ public class Playing extends State implements Statemethods {
 
                     player.setRight(true);
                     break;
-                case KeyEvent.VK_SPACE:
+                case KeyEvent.VK_K:
                     player.setJump(true);
                     break;
                 case KeyEvent.VK_ESCAPE:
-                    saveCurrentProgress();
                     paused = !paused;
                     break;
+                case KeyEvent.VK_J:
+                    player.setAttacking(true);
+                    break;
+                case KeyEvent.VK_L:
+                    player.powerAttack();
+                    break;
+
             }
         }
     }
@@ -424,32 +423,11 @@ public class Playing extends State implements Statemethods {
                 case KeyEvent.VK_D:
                     player.setRight(false);
                     break;
-                case KeyEvent.VK_SPACE:
+                case KeyEvent.VK_K:
                     player.setJump(false);
                     break;
             }
         }
-    }
-
-    public void saveCurrentProgress() {
-        String sql = "call saveCurrentProgress(?,?,?,?,?,?,?)";
-        PreparedStatement ps;
-        try {
-            ps = Connect.getConnection().prepareCall(sql);
-            
-            ps.setInt(1, Game.PLAYER_ID);
-            ps.setInt(2, player.getCurrentHP());
-            ps.setInt(3,player.getCurrentPower());
-            ps.setInt(4, (int) player.x);
-            ps.setInt(5, (int)player.y);
-            ps.setInt(6, levelManager.getLevelIndex());
-            ps.setInt(7, (int) score);
-            System.out.println(ps.toString());
-            ps.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(Playing.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
     }
 
     public void mouseDragged(MouseEvent e) {
