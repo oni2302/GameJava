@@ -1,5 +1,6 @@
 package gamestates;
 
+import data.Connect;
 import data.PlayerModel;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -26,7 +27,7 @@ import java.awt.Point;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import java.sql.PreparedStatement;
 import static utilz.Constants.Environment.*;
 import static utilz.Constants.Dialogue.*;
 
@@ -73,13 +74,6 @@ public class Playing extends State implements Statemethods {
         this.deadTimes = deadTimes;
     }
 
-    // Ship will be decided to drawn here. It's just a cool addition to the game
-    // for the first level. Hinting on that the player arrived with the boat.
-    // If you would like to have it on more levels, add a value for objects when
-    // creating the level from lvlImgs. Just like any other object.
-    // Then play around with position values so it looks correct depending on where
-    // you want
-    // it.
     private boolean drawShip = true;
     private int shipAni, shipTick, shipDir = 1;
     private float shipHeightDelta, shipHeightChange = 0.05f * Game.SCALE;
@@ -87,8 +81,9 @@ public class Playing extends State implements Statemethods {
     public Playing(Game game) {
         super(game);
         initClasses();
-
-        backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.PLAYING_BG_IMG);
+        loadData();
+        initData();
+        backgroundImg = LoadSave.GetSpriteAtlas(LoadSave.HIGH_SCORE_BG);
         bigCloud = LoadSave.GetSpriteAtlas(LoadSave.BIG_CLOUDS);
         smallCloud = LoadSave.GetSpriteAtlas(LoadSave.SMALL_CLOUDS);
         smallCloudsPos = new int[8];
@@ -164,12 +159,6 @@ public class Playing extends State implements Statemethods {
         objectManager = new ObjectManager(this);
 
         player = new Player(200, 200, (int) (64 * Game.SCALE), (int) (40 * Game.SCALE), this);
-        player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
-        if (!isLoad) {
-            player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
-        } else {
-            isLoad = false;
-        }
 
         pauseOverlay = new PauseOverlay(this);
         gameOverOverlay = new GameOverOverlay(this);
@@ -297,8 +286,8 @@ public class Playing extends State implements Statemethods {
         player.render(g, xLvlOffset);
         objectManager.drawBackgroundTrees(g, xLvlOffset);
         drawDialogue(g, xLvlOffset);
-
-        g.drawString(score + " / " + deadTimes, (int) player.getHitbox().x, (int) player.getHitbox().y);
+        g.setColor(Color.BLACK);
+        g.drawString(score + " / " + deadTimes, (int) player.getHitbox().x - xLvlOffset, (int) player.getHitbox().y);
         if (paused) {
             g.setColor(new Color(0, 0, 0, 150));
             g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
@@ -374,6 +363,26 @@ public class Playing extends State implements Statemethods {
         objectManager.checkSpikesTouched(p);
     }
 
+    public void saveCurrentProgress() {
+        String sql = "call saveCurrentProgress(?,?,?,?,?,?,?)";
+        PreparedStatement ps;
+        try {
+            ps = Connect.getConnection().prepareCall(sql);
+
+            ps.setInt(1, Game.PLAYER_ID);
+            ps.setInt(2, player.currentHealth);
+            ps.setInt(3, player.powerValue);
+            ps.setInt(4, (int) player.getHitbox().x);
+            ps.setInt(5, (int) player.getHitbox().y);
+            ps.setInt(6, levelManager.getLevelIndex());
+            ps.setInt(7, (int) score);
+            System.out.println(ps.toString());
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(Playing.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
 //        if (!gameOver) {
@@ -400,6 +409,7 @@ public class Playing extends State implements Statemethods {
                     player.setJump(true);
                     break;
                 case KeyEvent.VK_ESCAPE:
+                    saveCurrentProgress();
                     paused = !paused;
                     break;
                 case KeyEvent.VK_J:
@@ -526,7 +536,7 @@ public class Playing extends State implements Statemethods {
         this.playerDying = playerDying;
     }
 
-    public void loadData() {
+    public final void loadData() {
         PlayerModel playerModel = PlayerModel.loadPlayerInfo();
 
         if (playerModel.getX() != 0 && playerModel.getY() != 0) {
@@ -534,9 +544,9 @@ public class Playing extends State implements Statemethods {
         }
         levelManager.setLevelIndex(playerModel.getLevel());
         if (playerModel.getHp() != 0) {
-            player.changeHealth(playerModel.getHp());
+            player.currentHealth = playerModel.getHp();
         }
-        player.changePower(playerModel.getPower());
+        player.powerValue = (playerModel.getPower());
         if (playerModel.getHp() != 0) {
             isLoad = true;
         }
@@ -551,6 +561,15 @@ public class Playing extends State implements Statemethods {
 
     public void setStartTimes(long currentTimeMillis) {
         startTime = currentTimeMillis;
+    }
+
+    private void initData() {
+        player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
+        if (!isLoad) {
+            player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
+        } else {
+            isLoad = false;
+        }
     }
 
 }

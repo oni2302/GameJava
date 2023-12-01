@@ -49,7 +49,6 @@ public class Game implements Runnable {
 		audioPlayer = new AudioPlayer();
 		menu = new Menu(this);
 		playing = new Playing(this);
-                playing.loadData();
 		credits = new Credits(this);
 		gameOptions = new GameOptions(this);
 	}

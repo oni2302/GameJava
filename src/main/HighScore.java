@@ -4,10 +4,24 @@
  */
 package main;
 
+import data.Connect;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import utilz.FontHelper;
+import utilz.LoadSave;
+import java.sql.*;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 /**
  *
@@ -20,29 +34,131 @@ public class HighScore extends javax.swing.JFrame {
      */
     public HighScore() {
         this.setUndecorated(true);
+        this.setFont(FontHelper.PixelFont(30));
+//        this.setUndecorated(true);
+        initComponents();
+        initCustom();
+        initTable();
         this.setLocationRelativeTo(null);
-        this.requestFocus();
-        addKeyListener(new KeyListener() {
+    }
+
+    private void initTable() {
+        String sql = """
+                     SELECT playerId, lvl, score
+                     FROM (
+                         SELECT playerId, lvl, score,
+                                ROW_NUMBER() OVER(PARTITION BY playerId ORDER BY score DESC) as rank_within_player
+                         FROM game.high_score
+                     ) ranked_scores
+                     WHERE rank_within_player <= 10 and playerId = ?
+                     order by score desc""";
+        PreparedStatement ps;
+        try {
+            ps = Connect.getConnection().prepareStatement(sql);
+            ps.setInt(1,Game.PLAYER_ID);
+            ResultSet rs = ps.executeQuery();
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("Player ID");
+            model.addColumn("Level");
+            model.addColumn("Score");
+            
+
+            // Iterate through the ResultSet and add rows to the model
+            while (rs.next()) {
+                int playerId = rs.getInt("playerId");
+                int level = rs.getInt("lvl");
+                int score = rs.getInt("score");
+
+                // Create a Vector to store data for each row
+                Vector<Object> row = new Vector<>();
+                row.add(playerId);
+                row.add(level);
+                row.add(score);
+
+                // Add the row to the model
+                model.addRow(row);
+            }
+
+            // Create a JTable with the populated model
+            JTable table = new JTable(model);
+            JTableHeader header = table.getTableHeader();
+            header.setFont(FontHelper.PixelFont(30));
+//            table.setBackground(new java.awt.Color(0, 0, 0, 0));
+            table.setFont(FontHelper.PixelFont(35));
+            // Create a JScrollPane to contain the table
+            JScrollPane scrollPane = new JScrollPane(table);
+            tab_pane.addTab("Me", scrollPane);
+        } catch (SQLException ex) {
+            Logger.getLogger(HighScore.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        sql = """
+                     SELECT playerId, lvl, score
+                     FROM (
+                         SELECT playerId, lvl, score,
+                                ROW_NUMBER() OVER(PARTITION BY playerId ORDER BY score DESC) as rank_within_player
+                         FROM game.high_score
+                     ) ranked_scores
+                     WHERE rank_within_player <= 5
+                     order by score desc""";
+        try {
+            ps = Connect.getConnection().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("Player ID");
+            model.addColumn("Level");
+            model.addColumn("Score");
+            
+
+            // Iterate through the ResultSet and add rows to the model
+            while (rs.next()) {
+                int playerId = rs.getInt("playerId");
+                int level = rs.getInt("lvl");
+                int score = rs.getInt("score");
+
+                // Create a Vector to store data for each row
+                Vector<Object> row = new Vector<>();
+                row.add(playerId);
+                row.add(level);
+                row.add(score);
+
+                // Add the row to the model
+                model.addRow(row);
+            }
+
+            // Create a JTable with the populated model
+            JTable table = new JTable(model);
+            JTableHeader header = table.getTableHeader();
+            header.setFont(FontHelper.PixelFont(30));
+//            table.setBackground(new java.awt.Color(0, 0, 0, 0));
+            table.setFont(FontHelper.PixelFont(35));
+            // Create a JScrollPane to contain the table
+            JScrollPane scrollPane = new JScrollPane(table);
+            tab_pane.addTab("World", scrollPane);
+        } catch (SQLException ex) {
+            Logger.getLogger(HighScore.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    private void initCustom() {
+        Font f = FontHelper.PixelFont(30);
+        text_bxh.setFont(FontHelper.PixelFont(50));
+        text_bxh.setForeground(Color.white);
+        tab_pane.setFont(f);
+        addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                System.out.println("asd");
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    System.out.println("ad");
                     dispose(); // Close the frame
                 }
             }
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
         });
-        initComponents();
+        panel.setSize(this.getWidth(), this.getHeight());
+        ImageIcon backgroundImage = LoadSave.GetImageIcon(LoadSave.HIGH_SCORE_BG);
+
+        JLabel background = new JLabel(backgroundImage);
+        background.setSize(this.getWidth(), this.getHeight());
+        panel.add(background, BorderLayout.CENTER);
     }
 
     /**
@@ -54,36 +170,50 @@ public class HighScore extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jLabel1 = new javax.swing.JLabel();
+        panel = new javax.swing.JPanel();
+        text_bxh = new javax.swing.JLabel();
+        tab_pane = new javax.swing.JTabbedPane();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("BẢNG XẾP HẠNG");
-        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        text_bxh.setFont(new java.awt.Font("Segoe UI", 0, 30)); // NOI18N
+        text_bxh.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        text_bxh.setText("BANG XEP HANG");
+        text_bxh.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
+        panel.setLayout(panelLayout);
+        panelLayout.setHorizontalGroup(
+            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(tab_pane)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelLayout.createSequentialGroup()
+                .addContainerGap(113, Short.MAX_VALUE)
+                .addComponent(text_bxh)
+                .addGap(98, 98, 98))
+        );
+        panelLayout.setVerticalGroup(
+            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(text_bxh)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(tab_pane, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTabbedPane1)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(105, 105, 105)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
-                .addGap(84, 84, 84))
+            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(13, 13, 13)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(17, 17, 17))
+            .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -125,7 +255,9 @@ public class HighScore extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JPanel panel;
+    private javax.swing.JTabbedPane tab_pane;
+    private javax.swing.JLabel text_bxh;
     // End of variables declaration//GEN-END:variables
+
 }

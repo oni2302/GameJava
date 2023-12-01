@@ -5,6 +5,8 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import gamestates.Gamestate;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import main.HighScore;
 import utilz.LoadSave;
 import static utilz.Constants.UI.Buttons.*;
@@ -77,8 +79,7 @@ public class MenuButton {
         if (state == Gamestate.CREDITS) {
             HighScore highScore = new HighScore();
             highScore.setVisible(true);
-            highScore.setAlwaysOnTop(true);
-            highScore.setLocationRelativeTo(null);
+            highScore.requestFocus();
         } else {
             Gamestate.state = state;
         }

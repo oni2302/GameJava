@@ -48,7 +48,7 @@ public class Player extends Entity {
 	private int powerBarYStart = (int) (34 * Game.SCALE);
 	private int powerWidth = powerBarWidth;
 	private int powerMaxValue = 200;
-	private int powerValue = powerMaxValue;
+	public int powerValue = powerMaxValue;
 
 	private int flipX = 0;
 	private int flipW = 1;

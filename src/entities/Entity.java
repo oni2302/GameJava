@@ -21,7 +21,7 @@ public abstract class Entity {
 	protected float airSpeed;
 	protected boolean inAir = false;
 	protected int maxHealth;
-	protected int currentHealth;
+	public int currentHealth;
 	protected Rectangle2D.Float attackBox;
 	protected float walkSpeed;
 
@@ -70,7 +70,7 @@ public abstract class Entity {
 	protected void drawHitbox(Graphics g, int xLvlOffset) {
 		g.setColor(Color.PINK);
 		g.drawRect((int) hitbox.x - xLvlOffset, (int) hitbox.y, (int) hitbox.width, (int) hitbox.height);
-                g.drawRect((int)x,(int)y,width,height);
+//                g.drawRect((int)x,(int)y,width,height);
 	}
 
 	protected void initHitbox(int width, int height) {
